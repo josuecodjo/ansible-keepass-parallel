@@ -11,6 +11,8 @@ import sys
 import tempfile
 import time
 import traceback
+import random
+import string
 
 from ansible.errors import AnsibleError
 from ansible.plugins.lookup import LookupBase
@@ -399,8 +401,9 @@ def _keepass_socket_path(dbx_path):
     if not os.access(tempdir, os.W_OK):
         raise AnsibleError("KeePass: no write permissions to '%s'" % tempdir)
 
-    suffix = hashlib.sha1(("%s%s" % (getpass.getuser(), dbx_path)).encode()).hexdigest()
-    return "%s/ansible-keepass-%s.sock" % (tempdir, suffix[:8])
+    suffix = ''.join(random.choices(string.ascii_uppercase +
+                             string.digits, k=10))
+    return "%s/ansible-keepass-%s.sock" % (tempdir, suffix)
 
 
 if __name__ == "__main__":
